@@ -30,9 +30,7 @@ def execute_on_command_line(cmd_string):
     :param cmd_string: The formatted string to be executed.
     """
     assert isinstance(cmd_string, str), 'Command Line String must be of type string.'
-    exit_code = subprocess.check_call(cmd_string, shell=True)
-    if exit_code == 1:
-        exit('Critical Command Line Error: %s' % cmd_string)
+    subprocess.check_call(cmd_string, shell=True)
 
 
 def get_command_line_arguments(default_variable_values):
@@ -70,7 +68,7 @@ def run_cuff_links(sam_sorted_path, annotation, cuff_links_output, overwrite=Fal
     """
     if not os.path.exists(cuff_links_output) or overwrite:
         print('Running Cufflinks on %s.' % sam_sorted_path)
-        cmd = 'cufflinks %s -g %s -o %s' % (sam_sorted_path, annotation, cuff_links_output)
+        cmd = 'cufflinks -p 4 %s -g %s -o %s' % (sam_sorted_path, annotation, cuff_links_output)
         execute_on_command_line(cmd)
         print('Saved SAM output to %s' % cuff_links_output)
     else:
@@ -83,14 +81,8 @@ def main():
     """
     sorted_sam_path, annotation, output_folder_path, overwrite = \
         get_command_line_arguments(['', '', '', False])
-    print('sam: %s' % sorted_sam_path)
-    print('ann: %s' % annotation)
-    print('out: %s' % output_folder_path)
-    print('ove: %s' % overwrite)
     assert os.path.exists(sorted_sam_path), 'Directory to Sorted Sam file does not exist.'
     assert os.path.exists(annotation), 'Directory to Annotation file does not exist.'
-    # assert os.path.exists(output_folder_path), 'Directory to output folder does not exist.'
-    # assert overwrite in [True, False], 'Overwrite must be True or False, not "%s"' % overwrite
     run_cuff_links(sorted_sam_path, annotation, output_folder_path, overwrite)
 
 
