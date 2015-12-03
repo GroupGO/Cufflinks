@@ -30,9 +30,7 @@ def execute_on_command_line(cmd_string):
     :param cmd_string: The formatted string to be executed.
     """
     assert isinstance(cmd_string, str), 'Command Line String must be of type string.'
-    exit_code = subprocess.check_call(cmd_string, shell=True)
-    if exit_code == 1:
-        exit('Critical Command Line Error: %s' % cmd_string)
+    subprocess.check_call(cmd_string, shell=True)
 
 
 def get_command_line_arguments(default_variable_values):
@@ -72,21 +70,19 @@ def get_variable_command_line_arguments(start_index):
     return variable_inputs
 
 
-def run_cuff_norm(transcripts, annotation, sorted_sam_paths, output_path, overwrite=False):
+def run_cuff_norm(transcripts, sorted_sam_paths, output_path, overwrite=False):
     """
     Method to run Cuffnorm on command line.
 
     :param transcripts:
-    :param annotation:
-    :param sorted_sam_files:
+    :param sorted_sam_paths:
     :param output_path:
     :return:
     """
     if not os.path.exists(output_path) or overwrite:
-        cmd = 'cuffnorm '
+        cmd = 'cuffnorm -p 4 -o %s %s' % (output_path, transcripts)
         for sam_file in sorted_sam_paths:
             cmd += '%s ' % sam_file
-        cmd += '-g %s -o %s %s' % (annotation, output_path, transcripts)
         execute_on_command_line(cmd)
 
 
@@ -94,14 +90,13 @@ def main():
     """
     Method designed to run the command line tool cuffnorm.
     """
-    transcripts, annotation, output_folder_path, overwrite = get_command_line_arguments(['']*4)
-    sorted_sam_paths = get_variable_command_line_arguments(5)
+    transcripts, output_folder_path, overwrite = get_command_line_arguments(['']*3)
+    sorted_sam_paths = get_variable_command_line_arguments(4)
     assert os.path.exists(transcripts), 'Transcripts file path "%s" does not exist.' % transcripts
-    assert os.path.exists(annotation), 'Annotation file path "%s" does not exist.' % annotation
     assert os.path.exists(output_folder_path), 'Folder "%s" does not exist.' % output_folder_path
     for sam_file in sorted_sam_paths:
         assert os.path.exists(sam_file), 'SAM file path "%s" no found.' % sam_file
-    run_cuff_norm(transcripts, annotation, sorted_sam_paths, output_folder_path, overwrite)
+    run_cuff_norm(transcripts, sorted_sam_paths, output_folder_path, overwrite)
 
 
 if __name__ == '__main__':
