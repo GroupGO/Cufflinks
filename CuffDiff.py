@@ -30,9 +30,7 @@ def execute_on_command_line(cmd_string):
     :param cmd_string: The formatted string to be executed.
     """
     assert isinstance(cmd_string, str), 'Command Line String must be of type string.'
-    exit_code = subprocess.check_call(cmd_string, shell=True)
-    if exit_code == 1:
-        exit('Critical Command Line Error: %s' % cmd_string)
+    subprocess.check_call(cmd_string, shell=True)
 
 
 def get_command_line_arguments(default_variable_values):
@@ -83,7 +81,7 @@ def run_cuff_diff(sorted_sam_paths, annotation, output_path, overwrite=False):
     """
     if not os.path.exists(output_path) or overwrite:
         print('Running Cuffdiff on {0}'.format(sorted_sam_paths))
-        cmd = 'cuffdiff -g %s -l' % annotation
+        cmd = 'cuffdiff -p 8 -g %s -l' % annotation
         for sam_file in sorted_sam_paths:
             cmd += '%s ' % sam_file
         cmd += '-o %s' % output_path
