@@ -5,9 +5,7 @@
 Author: Henry Ehlers
 WUR_Number: 921013218060
 
-A script designed to ...
-    -input:
-    -output:
+A script designed to run the command line tool CuffQuant.
 
 In order to provide readable and understandable code, the right indentation margin has been
 increased from 79 to 99 characters, which remains in line with Python-Style-Recommendation (
@@ -78,6 +76,9 @@ def run_cuff_quant(sorted_sam_file, annotation, output_folder_path, overwrite):
 def main():
     sorted_sam_path, annotation, output_folder_path, overwrite = \
         get_command_line_arguments(['', '', '', False])
+    assert os.path.exists(sorted_sam_path), 'SAM file path "%s" not found.' % sorted_sam_path
+    assert os.path.exists(annotation), 'Annotation file path "%s" not found.' % annotation
+    assert os.path.exists(output_folder_path), 'Output path "%s" not found.' % output_folder_path
     run_cuff_quant(sorted_sam_path, annotation, output_folder_path, overwrite)
 
 
