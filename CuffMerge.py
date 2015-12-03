@@ -2,19 +2,21 @@
 
 
 """
-Author: Henry Ehlers, Samin Hosseini
-WUR_Number: 921013218060
+Author: Henry Ehlers, Samin Hosseini, Ronald de Jongh
+WUR_Number: 921013218060, ?, 930323409080
 
 A script designed to run the command line tool cuffdiff.
-    inputs:     -reference annotation file
+    inputs:     -list of directories to check
                 -output folder path
                 -overwrite option [True/False]
-                -sorted sam files
 
 In order to provide readable and understandable code, the right indentation margin has been
 increased from 79 to 99 characters, which remains in line with Python-Style-Recommendation (
 https://www.python.org/dev/peps/pep-0008/) .This allows for longer, more descriptive variable
 and function names, as well as more extensive doc-strings.
+
+CuffMerge now checks the directories in the list itself, then appends those to the command string
+
 """
 
 
@@ -72,9 +74,27 @@ def get_variable_command_line_arguments(start_index):
     return variable_inputs
 
 
-def run_cuff_merge(transcripts, annotation, sorted_sam_paths, output_path, overwrite=False):
+# def run_cuff_merge(transcripts, annotation, sorted_sam_paths, output_path, overwrite=False):
+#     """ depricated
+#     Method to run CuffMerge on command line.
+#
+#     :param transcripts:
+#     :param annotation:
+#     :param sorted_sam_files:
+#     :param output_path:
+#     :return:
+#     """
+#     if not os.path.exists(output_path) or overwrite:
+#         cmd = 'cuffmerge '
+#         for sam_file in sorted_sam_paths:
+#             cmd += '%s ' % sam_file
+#         cmd += '-g %s -o %s %s' % (annotation, output_path, transcripts)
+#         execute_on_command_line(cmd)
+
+
+def run_cuff_merge2(manifest_path, output_path, overwrite=False):
     """
-    Method to run Cuffnorm on command line.
+    Method to run CuffMerge on command line.
 
     :param transcripts:
     :param annotation:
@@ -83,25 +103,26 @@ def run_cuff_merge(transcripts, annotation, sorted_sam_paths, output_path, overw
     :return:
     """
     if not os.path.exists(output_path) or overwrite:
-        cmd = 'cuffmerge '
-        for sam_file in sorted_sam_paths:
-            cmd += '%s ' % sam_file
-        cmd += '-g %s -o %s %s' % (annotation, output_path, transcripts)
+        cmd = 'cuffmerge -o %s %s' % (output_path, manifest_path)
         execute_on_command_line(cmd)
+
+
+def make_manifest_text_file(cuff_links_path, file_name):
+    with open(file_name, 'w') as text_file:
+        for folder in os.listdir(cuff_links_path):
+            text_file.write('%s/%s/transcripts.gtf\n' % (cuff_links_path, folder))
 
 
 def main():
     """
-    Method designed to run the command line tool cuffnorm.
+    Method designed to run the command line tool cuffmerge.
     """
-    transcripts, annotation, output_folder_path, overwrite = get_command_line_arguments(['']*4)
-    sorted_sam_paths = get_variable_command_line_arguments(5)
-    assert os.path.exists(transcripts), 'Transcripts file path "%s" does not exist.' % transcripts
-    assert os.path.exists(annotation), 'Annotation file path "%s" does not exist.' % annotation
+    cuff_links_path, output_folder_path, run_name, overwrite = get_command_line_arguments(['']*4)
     assert os.path.exists(output_folder_path), 'Folder "%s" does not exist.' % output_folder_path
-    for sam_file in sorted_sam_paths:
-        assert os.path.exists(sam_file), 'SAM file path "%s" no found.' % sam_file
-    run_cuff_merge(transcripts, annotation, sorted_sam_paths, output_folder_path, overwrite)
+    assert os.path.exists(cuff_links_path), 'Folder "%s" does not exist.' % cuff_links_path
+    manifest_name = '%s.txt' % run_name
+    make_manifest_text_file(cuff_links_path, manifest_name)
+    run_cuff_merge2(manifest_name, output_folder_path, overwrite)
 
 
 if __name__ == '__main__':
