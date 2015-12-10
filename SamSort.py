@@ -6,9 +6,10 @@ Author: Henry Ehlers
 WUR_Number: 921013218060
 
 A script designed to sort a given SAM file and save it to a BAM file.
-    inputs:     -sam file directory
-                -sorted sam file directory
-                -overwrite
+
+    Inputs:     [1] A string specifying the path to a sam file.
+                [2] A string specifying the overwrite option [True/False] should existing files
+                    be encountered.
 
 In order to provide readable and understandable code, the right indentation margin has been
 increased from 79 to 99 characters, which remains in line with Python-Style-Recommendation (
@@ -59,24 +60,26 @@ def get_command_line_arguments(default_variable_values):
 
 def sort_sam(sam_file_name, overwrite=False):
     """
-    Method to run samtools sort on command line to sort a given SAM file to a given Sorted SAM
+    Method to run samtools sort on command line to sort a given SAM file to a given Sorted BAM
     file.
 
     :param sam_file_name: Directory of the input SAM file.
     :param overwrite: [True/False] statement that determines whether files are overwritten or not.
     """
-    bam_output_path = '%s.sorted.bam' % ''.join(sam_file_name.split('.')[0:-1])
-    print(bam_output_path)
-    if not os.path.exists(bam_output_path) or overwrite:
-        print('Sorting SAM file %s' % sam_file_name)
-        # cmd = '{0} view -S {1} -b > {1}; {0} sort {1} {2}; {0} index {2}'.format(
-        #     'samtools', sam_file_name, bam_output_path)
-        cmd = 'sort -k 3,3 -k4,4n %s %s' % (sam_file_name, bam_output_path)
-        print(cmd)
+    file_path = ''.join(sam_file_name.split('.')[0:-1])
+    file_name = ''.join(file_path.split('/')[-1])
+    sorted_bam_output_path = '%s.sorted' % file_path
+    bam_output_path = '%s.bam' % file_path
+    if not os.path.exists(sorted_bam_output_path) or overwrite:
+        print('Sorting SAM file %s\nOutput Bam File: %s\nOutput sorted Bam File: %s'
+              % sam_file_name, bam_output_path, sorted_bam_output_path)
+        cmd = '{0} view -S {1} -b -o {2};' \
+              '{0} sort {2} {3}'.format(
+            'samtools', sam_file_name, bam_output_path, sorted_bam_output_path, file_name)
         execute_on_command_line(cmd)
-        print('Sorted SAM file saved to %s' % bam_output_path)
+        print('Sorted BAM file saved to %s' % sorted_bam_output_path)
     else:
-        print('Output Directory %s already exists. Not overwritten.' % bam_output_path)
+        print('Output Directory %s already exists. Not overwritten.' % sorted_bam_output_path)
 
 
 def main():
