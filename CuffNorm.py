@@ -6,10 +6,12 @@ Author: Henry Ehlers, Samin Hosseini
 WUR_Number: 921013218060
 
 A script designed to run the command line tool cuffdiff.
-    inputs:     -reference annotation file
-                -output folder path
-                -overwrite option [True/False]
-                -sorted sam files
+
+    Inputs:     [1] A string specifying the path to a reference annotation file.
+                [2] A string specifying the path to the output folder.
+                [3] A string specifying the overwrite option [True/False] should existing files
+                be encountered.
+                [4] A string specifying the path to the variable number of sorted sam files.
 
 In order to provide readable and understandable code, the right indentation margin has been
 increased from 79 to 99 characters, which remains in line with Python-Style-Recommendation (
@@ -74,13 +76,13 @@ def run_cuff_norm(transcripts, sorted_sam_paths, output_path, overwrite=False):
     """
     Method to run Cuffnorm on command line.
 
-    :param transcripts:
-    :param sorted_sam_paths:
-    :param output_path:
-    :return:
+    :param transcripts: A path leading to a transcripts file.
+    :param sorted_sam_paths: A list of strings specifying the paths to the variable sorted sam
+    files.
+    :param output_path: A string specifying the path to the desired output file.
     """
     if not os.path.exists(output_path) or overwrite:
-        cmd = 'cuffnorm -p 4 -o %s %s' % (output_path, transcripts)
+        cmd = 'cuffnorm -p 4 -o %s %s ' % (output_path, transcripts)
         for sam_file in sorted_sam_paths:
             cmd += '%s ' % sam_file
         execute_on_command_line(cmd)
