@@ -6,10 +6,13 @@ Author: Henry Ehlers, Samin Hosseini
 WUR_Number: 921013218060
 
 A script designed to run the command line tool cuffdiff.
-    inputs:     -reference annotation file
-                -output folder path
-                -overwrite option [True/False]
-                -sorted sam files
+
+    Inputs:     [1] A string specifying the path to a reference annotation gtf or gff file.
+                [2] A string specifying the path to the output folder.
+                [3] A string specifying the overwrite option [True/False] to be used if existing
+                    files or folder are encountered.
+                [4] A variable number of string specifying the paths to the sorted sam files to
+                    be used.
 
 In order to provide readable and understandable code, the right indentation margin has been
 increased from 79 to 99 characters, which remains in line with Python-Style-Recommendation (

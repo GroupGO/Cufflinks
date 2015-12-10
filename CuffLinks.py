@@ -6,10 +6,12 @@ Author: Henry Ehlers, Samin Hosseini
 WUR_Number: 921013218060
 
 A script designed to run the command line tool cufflinks.
-    inputs:     -sorted sam file
-                -reference annotation file
-                -output folder path
-                -overwrite option [True/False]
+
+    Inputs:     [1] A string specifying the path to the sorted sam file to be used.
+                [2] A string specifying the path to the reference annotation file.
+                [3] A string specifying the path to the output folder.
+                [4] A string specifying the overwrite option [True/False] if existing files or
+                    folders are encountered.
 
 In order to provide readable and understandable code, the right indentation margin has been
 increased from 79 to 99 characters, which remains in line with Python-Style-Recommendation (
