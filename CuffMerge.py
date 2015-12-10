@@ -6,9 +6,11 @@ Author: Henry Ehlers, Samin Hosseini, Ronald de Jongh
 WUR_Number: 921013218060, ?, 930323409080
 
 A script designed to run the command line tool cuffdiff.
-    inputs:     -list of directories to check
-                -output folder path
-                -overwrite option [True/False]
+
+    Inputs:     [1] A string specifying the path to a Cufflinks output folder.
+                [2] A string specifying the path to output folder.
+                [3] A string speicyfing the overwrite option [True/False] should existing files
+                    be encountered.
 
 In order to provide readable and understandable code, the right indentation margin has been
 increased from 79 to 99 characters, which remains in line with Python-Style-Recommendation (
@@ -74,33 +76,14 @@ def get_variable_command_line_arguments(start_index):
     return variable_inputs
 
 
-# def run_cuff_merge(transcripts, annotation, sorted_sam_paths, output_path, overwrite=False):
-#     """ depricated
-#     Method to run CuffMerge on command line.
-#
-#     :param transcripts:
-#     :param annotation:
-#     :param sorted_sam_files:
-#     :param output_path:
-#     :return:
-#     """
-#     if not os.path.exists(output_path) or overwrite:
-#         cmd = 'cuffmerge '
-#         for sam_file in sorted_sam_paths:
-#             cmd += '%s ' % sam_file
-#         cmd += '-g %s -o %s %s' % (annotation, output_path, transcripts)
-#         execute_on_command_line(cmd)
-
-
 def run_cuff_merge2(manifest_path, output_path, overwrite=False):
     """
-    Method to run CuffMerge on command line.
+    Method to run cuff_merge on command line.
 
-    :param transcripts:
-    :param annotation:
-    :param sorted_sam_files:
-    :param output_path:
-    :return:
+    :param manifest_path: A string specifying the path to a Cuffmerge manifest path.
+    :param output_path: A string specifying the path to the output file.
+    :param overwrite: A boolean specifying whether to overwrite should existing file be
+    encountered.
     """
     if not os.path.exists(output_path) or overwrite:
         cmd = 'cuffmerge -o %s %s' % (output_path, manifest_path)
